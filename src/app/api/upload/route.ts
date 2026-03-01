@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
 import { auth } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
+import sharp from "sharp";
 
 export const dynamic = "force-dynamic";
 
@@ -20,21 +20,35 @@ export async function POST(req: NextRequest) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Create unique filename
+        // Image Optimization with Sharp
+        const optimizedBuffer = await sharp(buffer)
+            .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
+            .webp({ quality: 80 })
+            .toBuffer();
+
+        // Create unique filename with .webp extension
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        const filename = uniqueSuffix + "-" + file.name.replace(/\s+/g, "_");
+        const filename = `${uniqueSuffix}.webp`;
 
-        // Path: public/uploads/
-        const uploadDir = join(process.cwd(), "public", "uploads");
-        const path = join(uploadDir, filename);
+        // Upload to Supabase Storage
+        const { error } = await supabase.storage
+            .from("upload")
+            .upload(filename, optimizedBuffer, {
+                contentType: "image/webp",
+                upsert: true
+            });
 
-        // Ensure directory exists
-        await mkdir(uploadDir, { recursive: true });
+        if (error) {
+            console.error("Supabase storage error:", error);
+            throw error;
+        }
 
-        await writeFile(path, buffer);
-        const url = `/uploads/${filename}`;
+        // Get Public URL
+        const { data: { publicUrl } } = supabase.storage
+            .from("upload")
+            .getPublicUrl(filename);
 
-        return NextResponse.json({ url });
+        return NextResponse.json({ url: publicUrl });
     } catch (error) {
         console.error("Upload error:", error);
         return NextResponse.json({ error: "Faylni yuklashda xatolik" }, { status: 500 });

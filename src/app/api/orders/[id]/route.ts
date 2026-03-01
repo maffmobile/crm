@@ -109,6 +109,28 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
                     `👤 O'zgartirdi: ${session.user?.name || "Tizim"}`
                 );
             }
+
+            // AUTO-CLEANUP LOGIC
+            // If status is final (YETKAZILDI or QAYTARILDI), remove heavy data but keep contact
+            if (status === "YETKAZILDI" || status === "QAYTARILDI") {
+                // 1. Delete images from Supabase Storage
+                const filesToDelete = [];
+                if (order.receiptUrl) filesToDelete.push(order.receiptUrl.split("/").pop());
+                if (order.contractUrl) filesToDelete.push(order.contractUrl.split("/").pop());
+
+                if (filesToDelete.length > 0) {
+                    const { supabase } = await import("@/lib/supabase"); // Dynamic import to avoid circular dependency
+                    await supabase.storage.from("upload").remove(filesToDelete as string[]);
+                }
+
+                // 2. Clear heavy fields in database
+                updateData.notes = "(Ma'lumotlar arxivlandi)";
+                updateData.receiptUrl = null;
+                updateData.contractUrl = null;
+
+                // 3. Delete order items (optional but good for space)
+                await tx.orderItem.deleteMany({ where: { orderId: id } });
+            }
         }
 
         return await tx.order.update({

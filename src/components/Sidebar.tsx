@@ -10,7 +10,7 @@ import {
 
 const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["ADMIN", "OPERATOR"] },
-    { href: "/customers", label: "Mijozlar", icon: Users, roles: ["ADMIN", "OPERATOR"] },
+    { href: "/customers", label: "Kontaktlar", icon: Users, roles: ["ADMIN", "OPERATOR"] },
     { href: "/voronka", label: "Voronka", icon: Trello, roles: ["ADMIN", "OPERATOR"] },
     { href: "/orders", label: "Buyurtmalar", icon: ShoppingCart, roles: ["ADMIN", "OPERATOR", "POCHTA"] },
     { href: "/products", label: "Mahsulotlar", icon: Package, roles: ["ADMIN", "OPERATOR", "OMBOR"] },

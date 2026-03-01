@@ -45,7 +45,7 @@ export default function CustomersPage() {
             setTotal(data.total || 0);
         } catch (err) {
             console.error("Fetch customers error:", err);
-            setError("Mijozlarni yuklashda xatolik");
+            setError("Kontaktlarni yuklashda xatolik");
         } finally {
             setLoading(false);
         }
@@ -84,8 +84,8 @@ export default function CustomersPage() {
     return (
         <div className="page-content">
             <div style={{ marginBottom: 20 }}>
-                <h1 style={{ fontSize: 22, fontWeight: 800 }}>👥 Mijozlar</h1>
-                <p style={{ color: "var(--text-muted)", fontSize: 13 }}>Jami: {total} ta mijoz</p>
+                <h1 style={{ fontSize: 22, fontWeight: 800 }}>👥 Kontaktlar</h1>
+                <p style={{ color: "var(--text-muted)", fontSize: 13 }}>Jami: {total} ta kontakt</p>
             </div>
 
             <div className="toolbar">
@@ -97,7 +97,7 @@ export default function CustomersPage() {
                     </div>
                 </div>
                 <div className="toolbar-right">
-                    <button className="btn btn-primary" onClick={() => setShowCreate(true)}><Plus size={14} /> Yangi mijoz</button>
+                    <button className="btn btn-primary" onClick={() => setShowCreate(true)}><Plus size={14} /> Yangi kontakt</button>
                 </div>
             </div>
 
@@ -106,7 +106,7 @@ export default function CustomersPage() {
                     {loading ? (
                         <div className="loading-center"><div className="spinner" /></div>
                     ) : customers.length === 0 ? (
-                        <div className="empty-state"><div className="empty-state-icon">👤</div><p>Mijozlar topilmadi</p></div>
+                        <div className="empty-state"><div className="empty-state-icon">👤</div><p>Kontaktlar topilmadi</p></div>
                     ) : (
                         <table>
                             <thead>
@@ -156,7 +156,7 @@ export default function CustomersPage() {
                 <div className="modal-overlay" onClick={() => setSelected(null)}>
                     <div className="modal" onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2 className="modal-title">👤 Mijoz ma'lumotlari</h2>
+                            <h2 className="modal-title">👤 Kontakt ma'lumotlari</h2>
                             <button className="btn btn-secondary btn-icon" onClick={() => setSelected(null)}><X size={16} /></button>
                         </div>
                         <div className="modal-body">
@@ -190,7 +190,7 @@ export default function CustomersPage() {
                 <div className="modal-overlay" onClick={() => setShowCreate(false)}>
                     <div className="modal" onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2 className="modal-title">➕ Yangi mijoz</h2>
+                            <h2 className="modal-title">➕ Yangi kontakt</h2>
                             <button className="btn btn-secondary btn-icon" onClick={() => setShowCreate(false)}><X size={16} /></button>
                         </div>
                         <form onSubmit={handleCreate}>

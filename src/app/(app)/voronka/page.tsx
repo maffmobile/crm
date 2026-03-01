@@ -278,7 +278,7 @@ export default function VoronkaPage() {
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexShrink: 0 }}>
                 <div>
-                    <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Mijozlar oqimi</h1>
+                    <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Kontaktlar oqimi</h1>
                     <p style={{ color: "var(--text-muted)", fontSize: 13 }}>Sotuv voronkasi bo'ylab buyurtmalarni boshqaring</p>
                 </div>
                 <div style={{ display: "flex", gap: 12 }}>
