@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, X, Upload, FileText, Image as ImageIcon } from "lucide-react";
+import { Plus, X, Upload, FileText, CheckCircle, Image as ImageIcon } from "lucide-react";
 
 export function CreateOrderModal({ onClose, onSuccess, customers, products }: { onClose: () => void, onSuccess: () => void, customers: any[], products: any[] }) {
     const [form, setForm] = useState({
