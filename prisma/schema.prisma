@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Enums replaced with strings for SQLite compatibility
+// Role: ADMIN, OPERATOR, POCHTA, OMBOR
+// OrderStatus: YANGI, TASDIQLANDI, OMBORGA_YUBORILDI, POCHTAGA_TOPSHIRILDI, YOLDA, YETKAZILDI, QAYTARILDI, BEKOR_QILINDI
+
+model User {
+  id           String   @id @default(cuid())
+  fullName     String
+  phone        String?  @unique
+  email        String   @unique
+  passwordHash String
+  role         String   @default("OPERATOR")
+  isActive     Boolean  @default(true)
+  teamId       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  team             Team?            @relation(fields: [teamId], references: [id])
+  orders           Order[]
+  orderStatusLogs  OrderStatusLog[]
+  leadingTeams     Team[]           @relation("TeamLeader")
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  leaderId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       User[]
+  leader      User?    @relation("TeamLeader", fields: [leaderId], references: [id])
+}
+
+model Customer {
+  id           String   @id @default(cuid())
+  fullName     String
+  phone        String   @unique
+  extraPhone   String?
+  region       String?
+  district     String?
+  address      String?
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders   Order[]
+  tags     CustomerTag[]
+}
+
+model CustomerTag {
+  id         String   @id @default(cuid())
+  customerId String
+  tag        String
+  createdAt  DateTime @default(now())
+
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, tag])
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  category    String?
+  price       Float    @default(0)
+  stock       Int      @default(0)
+  sku         String?  @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique @default(cuid())
+  contractNumber  String?
+  customerId      String
+  operatorId      String
+  status          String      @default("YANGI")
+  totalSum        Float       @default(0)
+  deliveryType    String      @default("UZPOST") // UZPOST or KURYER
+  postalIndex     String?
+  trackingNumber  String?
+  receiptUrl      String?
+  contractUrl     String?
+  notes           String?
+  contractDate    DateTime?
+  dispatchDate    DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  customer     Customer         @relation(fields: [customerId], references: [id])
+  operator     User             @relation(fields: [operatorId], references: [id])
+  items        OrderItem[]
+  statusLogs   OrderStatusLog[]
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  productId   String
+  quantity    Int     @default(1)
+  priceAtSale Float
+
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product @relation(fields: [productId], references: [id])
+}
+
+model OrderStatusLog {
+  id          String      @id @default(cuid())
+  orderId     String
+  oldStatus   String?
+  newStatus   String
+  changedById String
+  note        String?
+  changedAt   DateTime    @default(now())
+
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  changedBy   User   @relation(fields: [changedById], references: [id])
+}
