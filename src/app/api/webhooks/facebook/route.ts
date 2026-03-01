@@ -1,3 +1,4 @@
+/** Vercel Build Trigger: Comprehensive Fix Applied **/
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
