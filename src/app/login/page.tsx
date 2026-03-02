@@ -84,19 +84,6 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div style={{ marginTop: 24, padding: "12px 16px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.05)" }}>
-                    <h3 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>💡 Kirish ma'lumotlari:</h3>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                            <span style={{ color: "var(--text-muted)" }}>Admin:</span>
-                            <code style={{ color: "var(--accent-primary)" }}>admin@internetmagazin.uz / admin123</code>
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                            <span style={{ color: "var(--text-muted)" }}>Operator:</span>
-                            <code style={{ color: "var(--accent-warning)" }}>operator@internetmagazin.uz / operator123</code>
-                        </div>
-                    </div>
-                </div>
 
                 <div style={{ marginTop: 24, textAlign: "center" }}>
                     <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
