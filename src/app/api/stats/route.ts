@@ -29,8 +29,8 @@ export async function GET(req: NextRequest) {
     const [
         totalOrders,
         todayOrders,
-        totalRevenue,
-        monthRevenue,
+        totals,
+        monthRevenueData,
         deliveredCount,
         returnedCount,
         newCustomers,
@@ -40,8 +40,14 @@ export async function GET(req: NextRequest) {
     ] = await Promise.all([
         (prisma as any).order.count({ where }),
         (prisma as any).order.count({ where: { ...where, createdAt: { gte: today, lt: tomorrow } } }),
-        (prisma as any).order.aggregate({ where: whereDelivered, _sum: { totalSum: true } }),
-        (prisma as any).order.aggregate({ where: { ...whereDelivered, createdAt: { gte: monthStart } }, _sum: { totalSum: true } }),
+        (prisma as any).order.aggregate({
+            where: whereDelivered,
+            _sum: { totalSum: true }
+        }),
+        (prisma as any).order.aggregate({
+            where: { ...whereDelivered, createdAt: { gte: monthStart } },
+            _sum: { totalSum: true }
+        }),
         (prisma as any).order.count({ where: whereDelivered }),
         (prisma as any).order.count({ where: whereReturned }),
         (prisma as any).customer.count({ where: { createdAt: { gte: monthStart } } }),
@@ -59,6 +65,7 @@ export async function GET(req: NextRequest) {
                 name: true,
                 users: {
                     select: {
+                        id: true,
                         _count: {
                             select: { orders: { where: { status: "YETKAZILDI" } } }
                         }
@@ -84,8 +91,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
         totalOrders,
         todayOrders,
-        totalRevenue: totalRevenue._sum.totalSum || 0,
-        monthRevenue: monthRevenue._sum.totalSum || 0,
+        totalRevenue: totals._sum.totalSum || 0,
+        monthRevenue: monthRevenueData._sum.totalSum || 0,
         deliveredCount,
         returnedCount,
         deliveryRate,

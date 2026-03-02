@@ -197,6 +197,7 @@ export default function VoronkaPage() {
     const [showCreate, setShowCreate] = useState(false);
     const [customers, setCustomers] = useState<any[]>([]);
     const [products, setProducts] = useState<any[]>([]);
+    const [preloadingData, setPreloadingData] = useState(false);
 
     const fetchOrders = async () => {
         try {
@@ -213,14 +214,30 @@ export default function VoronkaPage() {
         }
     };
 
-    useEffect(() => { fetchOrders(); }, []);
+    const prefetchData = async () => {
+        setPreloadingData(true);
+        try {
+            const [cRes, pRes] = await Promise.all([
+                fetch("/api/customers?limit=200"),
+                fetch("/api/products?active=true")
+            ]);
+            const cData = await cRes.json();
+            const pData = await pRes.json();
+            setCustomers(cData.customers || []);
+            setProducts(pData || []);
+        } catch (e) {
+            console.error("Prefetch error:", e);
+        } finally {
+            setPreloadingData(false);
+        }
+    };
 
-    const openCreate = async () => {
-        const [cRes, pRes] = await Promise.all([fetch("/api/customers?limit=200"), fetch("/api/products?active=true")]);
-        const cData = await cRes.json();
-        const pData = await pRes.json();
-        setCustomers(cData.customers || []);
-        setProducts(pData || []);
+    useEffect(() => {
+        fetchOrders();
+        prefetchData();
+    }, []);
+
+    const openCreate = () => {
         setShowCreate(true);
     };
 
