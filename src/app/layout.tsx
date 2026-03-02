@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { NavigationProgress } from "@/components/NavigationProgress";
 
 export const metadata: Metadata = {
   title: "Maffmobile CRM",
@@ -13,7 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uz">
-      <body>{children}</body>
+      <body>
+        <NavigationProgress />
+        {children}
+      </body>
     </html>
   );
 }
+
